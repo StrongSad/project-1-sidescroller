@@ -29,11 +29,88 @@ function create() {
 	ground.scale.setTo(.9);
 	//make ground permenant
 	ground.body.immovable = true;
-	//
+
+	//add sprite
+	player = game.add.sprite(25, game.world.height - 178, 'char');
+	//seta anchor
+	player.anchor.setTo(.5,.5);
+	//give player physics
+	game.physics.arcade.enable(player);
+	//add bounce and gravity
+	player.body.bounce.y = 0.1;
+	player.body.gravity.y = 400;
+	player.body.collideWorldBounds = true;
+	//walking animations
+	player.animations.add('walk', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
+	
+
+
+	cursors = game.input.keyboard.createCursorKeys();
 
 }
 
 
 function update() {
+	//reset velocity
+	player.body.velocity.x = 0;
 
+	//player movement
+	if (cursors.left.isDown) {
+		//move left
+		player.body.velocity.x = -150;
+		player.scale.x = -1;
+		player.animations.play('walk');
+
+	} else if (cursors.right. isDown) {
+		//move right
+		player.body.velocity.x = 150;
+		player.scale.x = 1;
+		player.animations.play('walk');
+	} else {
+
+		//stands still
+		player.animations.stop();
+
+		player.frame = 4;
+	}
+
+	//allow player to jump if touching the ground
+	if (cursors.up.isDown && player.body.touching.down){
+		player.body.velocity.y = -350;
+	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
