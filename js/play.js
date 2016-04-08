@@ -12,14 +12,16 @@ var playState = {
 	fires: null,
 	tiles: null,
 	boulders: null,
+	ghosts: null,
 	//dropTimer: null,
 	// tileTime: 50000,
-	// fireTime: 25000,
+	//fireTime: 15000,
 	// boulderTime: 0,
 	//highFireTime: 45000,
 
 	create: function() {
-		
+		game.time.now = 0;
+		console.log(game.time.now);
 		//repeating background
 		this.background = game.add.tileSprite(0, 0, 1200, 600, 'background');
 		//score display
@@ -55,7 +57,12 @@ var playState = {
 		this.fires.physicsBodyType = Phaser.Physics.ARCADE;
 		this.fires.createMultiple(10, 'fire');
 		//generate fire
-		game.time.events.loop(Phaser.Timer.SECOND * 3, this.spawnFire, this);
+		//if(game.time.now > this.fireTime) {
+		//	game.time.events.loop(Phaser.Timer.SECOND * 1, this.spawnFire, this);
+		//} else {
+		game.time.events.loop(Phaser.Timer.SECOND * 4, this.spawnFire, this);
+		//};
+
 		game.time.events.add(Phaser.Timer.SECOND * 15, this.runHighFire, this);
 		//game.time.events.add(Phaser.Timer.SECOND * 1, this.runSpawnFire, this);
 
@@ -72,7 +79,14 @@ var playState = {
 		this.boulders.enableBody = true;
 		this.boulders.physicsBodyType = Phaser.Physics.ARCADE;
 		this.boulders.createMultiple(10, 'boulder');
+
+		//ghosts
+		this.ghosts = game.add.group();
+		this.ghosts.enableBody = true;
+		this.ghosts.physicsBodyType = Phaser.Physics.ARCADE;
+		this.ghosts.createMultiple(6, 'ghost');
 		
+		game.time.events.add(Phaser.Timer.SECOND * 15, this.runGhosts, this);
 
 		var that = this;
 		
@@ -109,7 +123,7 @@ var playState = {
 
 	spawnFire: function() {
 		var fire = this.fires.getFirstExists(false);
-		fire.reset(game.world.width -50, game.world.height - 84);
+		fire.reset(game.world.width -50, game.world.height - 89);
 		fire.checkWorldBounds = true;
 		fire.outOfBoundsKill = true;
 		//fire.scale.setTo()
@@ -118,6 +132,8 @@ var playState = {
 		fire.animations.add('fire', [0, 1, 2, 3, 4], 8, true);
 		fire.animations.play('fire');
 		fire.body.setSize(28, 50);
+		this.music = game.add.audio('fireSound');
+		this.music.play();
 	},
 
 	runHighFire: function() {
@@ -130,15 +146,39 @@ var playState = {
 
 	spawnHighFire: function() {
 		var fire = this.fires.getFirstExists(false);
-		fire.reset(game.world.width -50, game.world.height - 160);
+		fire.reset(50, game.world.height - 200);
 		fire.checkWorldBounds = true;
 		fire.outOfBoundsKill = true;
+		fire.body.gravity.y = 85 + Math.random() * 50;
+		fire.body.bounce.y = 1 + Math.random() * 4;
 		//fire.scale.setTo()
 		fire.anchor.setTo(.5);
-		fire.body.velocity.x = game.rnd.integerInRange(-475, -300);
+		fire.body.velocity.x = game.rnd.integerInRange(300, 475);
 		fire.animations.add('fire', [0, 1, 2, 3, 4], 8, true);
 		fire.animations.play('fire');
 		fire.body.setSize(28, 50);
+		this.music = game.add.audio('fireSound');
+		this.music.play();
+	},
+
+	runGhosts: function() {
+		game.time.events.loop(Phaser.Timer.SECOND * 8 , this.spawnGhosts, this);
+	},
+
+	spawnGhosts: function() {
+		var ghost = this.ghosts.getFirstExists(false);
+		ghost.reset(game.world.width -50, game.world.height - 200);
+		ghost.checkWorldBounds = true;
+		ghost.outOfBoundsKill = true;
+		ghost.scale.setTo(1.5);
+		ghost.anchor.setTo(.5);
+		ghost.body.velocity.x = game.rnd.integerInRange(-475, -300);
+		ghost.animations.add('ghost', [0, 1, 2, 3, 4, 5], 8, true);
+		ghost.animations.play('ghost');
+		ghost.body.setSize(50, 50);
+		this.music = game.add.audio('ghostSound');
+		this.music.play();
+		console.log(this.music);
 	},
 
 	// ranTile: function() {
@@ -175,10 +215,10 @@ var playState = {
 
 	spawnBoulder: function() {
 		var boulder = this.boulders.getFirstExists(false);
-		boulder.reset(50, game.world.height - 84);
+		boulder.reset(50, game.world.height - 106);
 		boulder.checkWorldBounds = true;
 		boulder.outOfBoundsKill = true;
-		//fire.scale.setTo()
+		boulder.scale.setTo(.8);
 		boulder.anchor.setTo(.5);
 		boulder.body.velocity.x = game.rnd.integerInRange(300, 500);
 		boulder.animations.add('boulder', [0, 1, 2, 3], 8, true);
@@ -191,11 +231,15 @@ var playState = {
 	hitFire: function(player, fire) {
 		fire.kill();
 		game.state.start('win');
-
 	},
 
 	hitBoulder: function(player, boulder) {
 		boulder.kill();
+		game.state.start('win');
+	},
+
+	hitGhost: function(player, ghost) {
+		ghost.kill();
 		game.state.start('win');
 	},
 
@@ -210,6 +254,8 @@ var playState = {
 		this.game.physics.arcade.overlap(this.player, this.fires, this.hitFire, null, this);
 		this.game.physics.arcade.collide(this.player, this.tiles);
 		this.game.physics.arcade.overlap(this.player, this.boulders, this.hitBoulder, null, this);
+		this.game.physics.arcade.overlap(this.player, this.ghosts, this.hitGhost, null, this);
+		this.game.physics.arcade.collide(this.fire, this.ground);
 		//reset velocity
 		this.player.body.velocity.x = 0;
 
@@ -233,6 +279,7 @@ var playState = {
 			this.player.body.velocity.x = 150;
 			this.player.scale.x = this.PLAYER_SCALE;
 			this.player.animations.play('walk');
+
 		} else {
 			//stands still
 			this.player.animations.stop();
@@ -248,14 +295,16 @@ var playState = {
 
 	},
 
-	// render: function() {
-	// 	for(var i = 0; i < this.boulders.children.length; i++) {
-	// 		var boulder = this.boulders.children[i];
-	// 		game.debug.body(boulder);
-	// 		var fire = this.fires.children[i];
-	// 		game.debug.body(fire);
-	// 	}
-	// },
+	render: function() {
+		for(var i = 0; i < this.boulders.children.length; i++) {
+			var boulder = this.boulders.children[i];
+			game.debug.body(boulder);
+			var fire = this.fires.children[i];
+			game.debug.body(fire);
+			var ghost = this.ghosts.children[i];
+			game.debug.body(ghost);
+		}
+	},
 
 	win: function() {
 		game.state.start('win');
