@@ -63,11 +63,10 @@ var playState = {
 		game.time.events.loop(Phaser.Timer.SECOND * 4, this.spawnFire, this);
 		//};
 
-		game.time.events.add(Phaser.Timer.SECOND * 15, this.runHighFire, this);
+		game.time.events.add(Phaser.Timer.SECOND * 30, this.runHighFire, this);
 		//game.time.events.add(Phaser.Timer.SECOND * 1, this.runSpawnFire, this);
 
 		//enable tiles to be generated 
-		//Trying to make tiles imovable
 		this.tiles = game.add.group();
 		this.tiles.enableBody = true;
 		this.tiles.physicsBodyType = Phaser.Physics.ARCADE;
@@ -99,7 +98,7 @@ var playState = {
 		
 
 		//update score
-		game.time.events.loop(Phaser.Timer.SECOND / 10, function() {
+		game.time.events.loop(Phaser.Timer.SECOND / 8, function() {
 			this.score += 1;
 			scoreText.text = 'Score: ' + this.score;
 		}, this);
@@ -108,18 +107,6 @@ var playState = {
 		this.cursors = game.input.keyboard.createCursorKeys();
 
 	}, 
-
-	// updateScore: function() {
-
-	// }
-
-	// runSpawnFire: function() {
-	// 	//if(game.time.elapsed > this.fireTime){
-	// 	//	game.time.events.loop(Phaser.Timer.SECOND * 2, this.SpawnFire, this);
-	// 	//} else {
-	// 		game.time.events.loop(Phaser.Timer.SECOND * 3, this.SpawnFire, this);
-	// 	//};
-	// },
 
 	spawnFire: function() {
 		var fire = this.fires.getFirstExists(false);
@@ -131,7 +118,7 @@ var playState = {
 		fire.body.velocity.x = game.rnd.integerInRange(-475, -300);
 		fire.animations.add('fire', [0, 1, 2, 3, 4], 8, true);
 		fire.animations.play('fire');
-		fire.body.setSize(28, 50);
+		fire.body.setSize(28, 45);
 		this.music = game.add.audio('fireSound');
 		this.music.play();
 	},
@@ -140,7 +127,7 @@ var playState = {
 		//if (game.time.elapsed > this.highFireTime) {
 		//	game.time.events.loop(Phaser.Timer.SECOND * 5 , this.spawnHighFire, this);
 		//} else {
-			game.time.events.loop(Phaser.Timer.SECOND * 7 , this.spawnHighFire, this);
+			game.time.events.loop(Phaser.Timer.SECOND * 8 , this.spawnHighFire, this);
 		//};
 	},
 
@@ -156,13 +143,13 @@ var playState = {
 		fire.body.velocity.x = game.rnd.integerInRange(300, 475);
 		fire.animations.add('fire', [0, 1, 2, 3, 4], 8, true);
 		fire.animations.play('fire');
-		fire.body.setSize(28, 50);
+		fire.body.setSize(28, 45);
 		this.music = game.add.audio('fireSound');
 		this.music.play();
 	},
 
 	runGhosts: function() {
-		game.time.events.loop(Phaser.Timer.SECOND * 8 , this.spawnGhosts, this);
+		game.time.events.loop(Phaser.Timer.SECOND * 6 , this.spawnGhosts, this);
 	},
 
 	spawnGhosts: function() {
@@ -175,7 +162,7 @@ var playState = {
 		ghost.body.velocity.x = game.rnd.integerInRange(-475, -300);
 		ghost.animations.add('ghost', [0, 1, 2, 3, 4, 5], 8, true);
 		ghost.animations.play('ghost');
-		ghost.body.setSize(50, 50);
+		ghost.body.setSize(64, 64);
 		this.music = game.add.audio('ghostSound');
 		this.music.play();
 		console.log(this.music);
@@ -295,16 +282,16 @@ var playState = {
 
 	},
 
-	render: function() {
-		for(var i = 0; i < this.boulders.children.length; i++) {
-			var boulder = this.boulders.children[i];
-			game.debug.body(boulder);
-			var fire = this.fires.children[i];
-			game.debug.body(fire);
-			var ghost = this.ghosts.children[i];
-			game.debug.body(ghost);
-		}
-	},
+	// render: function() {
+	// 	for(var i = 0; i < this.boulders.children.length; i++) {
+	// 		var boulder = this.boulders.children[i];
+	// 		game.debug.body(boulder);
+	// 		var fire = this.fires.children[i];
+	// 		game.debug.body(fire);
+	// 		// var ghost = this.ghosts.children[i];
+	// 		// game.debug.body(ghost);
+	// 	}
+	// },
 
 	win: function() {
 		game.state.start('win');
