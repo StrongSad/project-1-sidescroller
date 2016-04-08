@@ -137,7 +137,7 @@ var playState = {
 		fire.checkWorldBounds = true;
 		fire.outOfBoundsKill = true;
 		fire.body.gravity.y = 85 + Math.random() * 50;
-		fire.body.bounce.y = 1 + Math.random() * 4;
+		fire.body.bounce.y = 1 + Math.random() * 2;
 		//fire.scale.setTo()
 		fire.anchor.setTo(.5);
 		fire.body.velocity.x = game.rnd.integerInRange(300, 475);
