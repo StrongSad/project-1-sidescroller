@@ -63,7 +63,7 @@ var playState = {
 		game.time.events.loop(Phaser.Timer.SECOND * 4, this.spawnFire, this);
 		//};
 
-		game.time.events.add(Phaser.Timer.SECOND * 30, this.runHighFire, this);
+		game.time.events.add(Phaser.Timer.SECOND * 25, this.runHighFire, this);
 		//game.time.events.add(Phaser.Timer.SECOND * 1, this.runSpawnFire, this);
 
 		//enable tiles to be generated 
@@ -242,7 +242,7 @@ var playState = {
 		this.game.physics.arcade.collide(this.player, this.tiles);
 		this.game.physics.arcade.overlap(this.player, this.boulders, this.hitBoulder, null, this);
 		this.game.physics.arcade.overlap(this.player, this.ghosts, this.hitGhost, null, this);
-		this.game.physics.arcade.collide(this.fire, this.ground);
+		this.game.physics.arcade.collide(this.fires.children, this.ground);
 		//reset velocity
 		this.player.body.velocity.x = 0;
 
