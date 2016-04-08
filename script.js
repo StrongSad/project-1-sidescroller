@@ -44,7 +44,7 @@ function create() {
 	//add bounce and gravity
 	player.body.bounce.y = 0.1;
 	player.body.gravity.y = 600;
-	//player.body.collideWorldBounds = true;
+	player.body.collideWorldBounds = true;
 	//walking animations
 	player.animations.add('walk', [0, 1, 2, 3], 8, true);
 	
@@ -95,7 +95,9 @@ function update() {
 		player.body.velocity.y = -350;
 	}
 
-	if(player.x <= 5) {
+	//console.log(player.position.x);
+
+	if(player.position.x < 42) {
 		console.log('GAME_OVER');
 	}
 }
