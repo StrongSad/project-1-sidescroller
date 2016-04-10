@@ -17,7 +17,7 @@ var menuState = {
 		var instructionLabel = game.add.text(180, 240, 'do not move with in 42px of left edge of screen ', 
 			{font: '25px Ariel', fill: '#000000'});
 
-		var instructionLabel = game.add.text(180, 280, 'Survive', 
+		var instructionLabel = game.add.text(180, 280, 'Use yhe arrow keys to survive', 
 			{font: '25px Ariel', fill: '#000000'});
 
 		var questionLabel = game.add.text(160, 340, 'How high can you score?', 
