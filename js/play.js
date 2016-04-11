@@ -145,6 +145,7 @@ var playState = {
 		fire.animations.play('fire');
 		fire.body.setSize(28, 45);
 		this.music = game.add.audio('fireSound');
+		this.game.physics.arcade.collide(this.fire.children, this.ground);
 		this.music.play();
 	},
 
@@ -242,7 +243,7 @@ var playState = {
 		this.game.physics.arcade.collide(this.player, this.tiles);
 		this.game.physics.arcade.overlap(this.player, this.boulders, this.hitBoulder, null, this);
 		this.game.physics.arcade.overlap(this.player, this.ghosts, this.hitGhost, null, this);
-		this.game.physics.arcade.collide(this.fire.children, this.ground);
+		
 		//reset velocity
 		this.player.body.velocity.x = 0;
 
